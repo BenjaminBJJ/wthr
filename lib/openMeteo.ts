@@ -3,9 +3,18 @@ import { fetchWeatherApi } from "openmeteo";
 const params = {
 	latitude: 52.52,
 	longitude: 13.41,
+	daily: [
+		"sunrise",
+		"sunset",
+		"wind_speed_10m_max",
+		"temperature_2m_max",
+		"temperature_2m_min",
+		"daylight_duration",
+		"precipitation_hours",
+	],
 	hourly: "temperature_2m",
 	models: "icon_seamless",
-	current: "apparent_temperature",
+	current: ["apparent_temperature", "precipitation", "relative_humidity_2m", "wind_speed_10m"],
 };
 const url = "https://api.open-meteo.com/v1/forecast";
 const responses = await fetchWeatherApi(url, params);
@@ -27,12 +36,20 @@ console.log(
 
 const current = response.current()!;
 const hourly = response.hourly()!;
+const daily = response.daily()!;
+
+// Define Int64 variables so they can be processed accordingly
+const sunrise = daily.variables(0)!;
+const sunset = daily.variables(1)!;
 
 // Note: The order of weather variables in the URL query and the indices below need to match!
 export const weatherData = {
 	current: {
 		time: new Date((Number(current.time()) + utcOffsetSeconds) * 1000),
 		apparent_temperature: current.variables(0)!.value(),
+		precipitation: current.variables(1)!.value(),
+		relative_humidity_2m: current.variables(2)!.value(),
+		wind_speed_10m: current.variables(3)!.value(),
 	},
 	hourly: {
 		time: [
@@ -43,11 +60,23 @@ export const weatherData = {
 		),
 		temperature_2m: hourly.variables(0)!.valuesArray(),
 	},
+	daily: {
+		time: [...Array((Number(daily.timeEnd()) - Number(daily.time())) / daily.interval())].map(
+			(_, i) =>
+				new Date((Number(daily.time()) + i * daily.interval() + utcOffsetSeconds) * 1000)
+		),
+		// Map Int64 values to according structure
+		sunrise: [...Array(sunrise.valuesInt64Length())].map(
+			(_, i) => new Date((Number(sunrise.valuesInt64(i)) + utcOffsetSeconds) * 1000)
+		),
+		// Map Int64 values to according structure
+		sunset: [...Array(sunset.valuesInt64Length())].map(
+			(_, i) => new Date((Number(sunset.valuesInt64(i)) + utcOffsetSeconds) * 1000)
+		),
+		wind_speed_10m_max: daily.variables(2)!.valuesArray(),
+		temperature_2m_max: daily.variables(3)!.valuesArray(),
+		temperature_2m_min: daily.variables(4)!.valuesArray(),
+		daylight_duration: daily.variables(5)!.valuesArray(),
+		precipitation_hours: daily.variables(6)!.valuesArray(),
+	},
 };
-
-// 'weatherData' now contains a simple structure with arrays with datetime and weather data
-console.log(
-	`\nCurrent time: ${weatherData.current.time}`,
-	weatherData.current.apparent_temperature
-);
-console.log("\nHourly data", weatherData.hourly);
