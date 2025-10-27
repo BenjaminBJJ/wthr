@@ -6,12 +6,7 @@ const HourlyWeather = () => {
 		Math.round
 	);
 
-	return (
-		<div>
-			{hourlyWeatherTemperature.length}
-			<Image src={"/clear-day.svg"} width={132} height={132} alt="some" />
-		</div>
-	);
+	return <div>{hourlyWeatherTemperature.length}</div>;
 };
 
 export default HourlyWeather;

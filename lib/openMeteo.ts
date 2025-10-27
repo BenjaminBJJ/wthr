@@ -14,7 +14,17 @@ const params = {
 	],
 	hourly: "temperature_2m",
 	models: "icon_seamless",
-	current: ["apparent_temperature", "precipitation", "relative_humidity_2m", "wind_speed_10m"],
+	current: [
+		"cloud_cover",
+		"rain",
+		"precipitation",
+		"is_day",
+		"apparent_temperature",
+		"relative_humidity_2m",
+		"temperature_2m",
+		"wind_speed_10m",
+		"weather_code",
+	],
 };
 const url = "https://api.open-meteo.com/v1/forecast";
 const responses = await fetchWeatherApi(url, params);
@@ -46,10 +56,15 @@ const sunset = daily.variables(1)!;
 export const weatherData = {
 	current: {
 		time: new Date((Number(current.time()) + utcOffsetSeconds) * 1000),
-		apparent_temperature: current.variables(0)!.value(),
-		precipitation: current.variables(1)!.value(),
-		relative_humidity_2m: current.variables(2)!.value(),
-		wind_speed_10m: current.variables(3)!.value(),
+		cloud_cover: current.variables(0)!.value(),
+		rain: current.variables(1)!.value(),
+		precipitation: current.variables(2)!.value(),
+		is_day: current.variables(3)!.value(),
+		apparent_temperature: current.variables(4)!.value(),
+		relative_humidity_2m: current.variables(5)!.value(),
+		temperature_2m: current.variables(6)!.value(),
+		wind_speed_10m: current.variables(7)!.value(),
+		weather_code: current.variables(8)!.value(),
 	},
 	hourly: {
 		time: [
