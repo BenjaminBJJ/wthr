@@ -1,8 +1,8 @@
 import { fetchWeatherApi } from "openmeteo";
 
 const params = {
-	latitude: 52.52,
-	longitude: 13.41,
+	latitude: 25.276987,
+	longitude: 55.296249,
 	daily: [
 		"sunrise",
 		"sunset",
@@ -11,6 +11,10 @@ const params = {
 		"temperature_2m_min",
 		"daylight_duration",
 		"precipitation_hours",
+		"weather_code",
+		"relative_humidity_2m_mean",
+		"cloud_cover_mean",
+		"precipitation_probability_mean",
 	],
 	hourly: "temperature_2m",
 	models: "icon_seamless",
@@ -93,5 +97,9 @@ export const weatherData = {
 		temperature_2m_min: daily.variables(4)!.valuesArray(),
 		daylight_duration: daily.variables(5)!.valuesArray(),
 		precipitation_hours: daily.variables(6)!.valuesArray(),
+		weather_code: daily.variables(0)!.valuesArray(),
+		relative_humidity_2m_mean: daily.variables(1)!.valuesArray(),
+		cloud_cover_mean: daily.variables(2)!.valuesArray(),
+		precipitation_probability_mean: daily.variables(3)!.valuesArray(),
 	},
 };
