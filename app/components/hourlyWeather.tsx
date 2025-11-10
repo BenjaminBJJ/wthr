@@ -1,12 +1,11 @@
-import { weatherData } from "@/lib/openMeteo";
-import Image from "next/image";
+import HourlyWeatherChart from "./weatherChart";
 
 const HourlyWeather = () => {
-	const hourlyWeatherTemperature = [...(weatherData?.hourly?.temperature_2m ?? [])].map(
-		Math.round
-	);
-
-	return <div>{hourlyWeatherTemperature.length}</div>;
+  return (
+    <div>
+      <HourlyWeatherChart />
+    </div>
+  );
 };
 
 export default HourlyWeather;
