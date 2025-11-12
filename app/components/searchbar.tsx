@@ -13,6 +13,7 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
+import { useWeatherStore } from "@/store/weatherStore";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -29,6 +30,7 @@ const SearchBar: FC = () => {
   const [selectedAddress, setSelectedAddress] = useState<Suggestion | null>(
     null
   );
+  const setCoordinates = useWeatherStore((state) => state.setCoordinates);
 
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedInput(inputValue), 300);
@@ -47,6 +49,45 @@ const SearchBar: FC = () => {
     setInputValue(item.title.text);
   };
 
+  useEffect(() => {
+    if (!selectedAddress) return;
+
+    console.log("Selected address:", selectedAddress.title.text);
+
+    const fetchGeocoder = async () => {
+      try {
+        const apiKey = process.env.NEXT_PUBLIC_YANDEX_MAP_GEOCODER_API;
+        if (!apiKey) {
+          console.error("API KEY is missing");
+          return;
+        }
+
+        const res = await fetch(
+          `https://geocode-maps.yandex.ru/v1/?apikey=${apiKey}&geocode=${encodeURIComponent(
+            selectedAddress.title.text
+          )}&format=json`
+        );
+
+        if (!res.ok) {
+          console.error("Geocoder response not OK", res.status);
+          return;
+        }
+
+        const data = await res.json();
+        const pointString =
+          data?.response?.GeoObjectCollection?.featureMember?.[0]?.GeoObject
+            ?.Point?.pos;
+        if (pointString) {
+          const [lon, lat] = pointString.split(" ").map(Number);
+          setCoordinates(lat, lon);
+        }
+      } catch (err) {
+        console.error("Geocoder fetch error:", err);
+      }
+    };
+
+    fetchGeocoder();
+  }, [selectedAddress]);
   return (
     <div className="relative w-full max-w-md">
       <Popover
@@ -62,11 +103,10 @@ const SearchBar: FC = () => {
                 setInputValue(e.target.value);
                 setSelectedAddress(null);
               }}
-              disabled={isLoading}
             />
 
             <InputGroupAddon align="inline-end">
-              {isLoading ? <Spinner /> : ""}
+              {isLoading && <Spinner />}
             </InputGroupAddon>
           </InputGroup>
         </PopoverTrigger>
