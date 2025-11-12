@@ -1,34 +1,40 @@
-import SpotlightCard from "@/components/SpotlightCard";
+"use client";
 import { useWeeklyWeather } from "@/hooks/useWeeklyWeather";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 
 const WeeklyWeather = () => {
-  const { label, icon, weeklyWeatherDate, weeklyWeatherTemperature } =
+  const { icon, weeklyWeatherDate, weeklyWeatherTemperature } =
     useWeeklyWeather();
 
   return (
-    <div className="flex gap-10">
-      <h1 className="text-5xl font-bold">Weekly</h1>
-
+    <section className="flex  gap-3 overflow-x-scroll scrollbar-hidden">
       {weeklyWeatherTemperature?.map((temp, i) => (
-        <SpotlightCard key={i}>
-          {weeklyWeatherDate?.[i]?.toLocaleDateString("ru-RU", {
-            weekday: "short",
-            day: "numeric",
-            month: "short",
-          })}
-          : {temp}°C
-          {/* {Array.isArray(label) ? label[i] : label}{" "} */}
-          <Image
-            src={`/weather/animated/${Array.isArray(icon) ? icon[i] : icon}`}
-            loading={"eager"}
-            alt="Weather Icon"
-            width={72}
-            height={72}
-          />
-        </SpotlightCard>
+        <Card className="min-w-fit max-w-fit items-center" key={i}>
+          <CardHeader className="w-full text-center">
+            <CardTitle className="capitalize">
+              {weeklyWeatherDate?.[i]?.toLocaleDateString("ru-RU", {
+                weekday: "short",
+              })}
+            </CardTitle>
+            {weeklyWeatherDate?.[i]?.toLocaleDateString("ru-RU", {
+              day: "numeric",
+              month: "short",
+            })}
+          </CardHeader>
+          <CardContent className="items-center text-center">
+            <p>{temp}°C</p>
+            <Image
+              src={`/weather/animated/${Array.isArray(icon) ? icon[i] : icon}`}
+              loading={"eager"}
+              alt="Weather Icon"
+              width={100}
+              height={100}
+            />
+          </CardContent>
+        </Card>
       ))}
-    </div>
+    </section>
   );
 };
 

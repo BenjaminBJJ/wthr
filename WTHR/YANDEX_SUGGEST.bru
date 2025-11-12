@@ -1,0 +1,21 @@
+meta {
+  name: YANDEX_SUGGEST
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://suggest-maps.yandex.ru/v1/suggest?text=бурдж&types=country,province,locality&apikey=${process.env.NEXT_PUBLIC_YANDEX_MAP_GEOCODER_API}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  text: бурдж
+  types: country,province,locality
+  apikey: ${process.env.NEXT_PUBLIC_YANDEX_MAP_GEOCODER_API}
+}
+
+settings {
+  encodeUrl: true
+}

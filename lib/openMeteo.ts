@@ -1,8 +1,8 @@
 import { fetchWeatherApi } from "openmeteo";
 
 const params = {
-  latitude: 38.5358,
-  longitude: 68.779,
+  latitude: 38,
+  longitude: 68,
   daily: [
     "weather_code",
     "temperature_2m_mean",

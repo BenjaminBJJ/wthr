@@ -1,0 +1,22 @@
+meta {
+  name: YANDEX_GEOKODER
+  type: http
+  seq: 1
+}
+
+get {
+  url: https://geocode-maps.yandex.ru/v1/?apikey={{YA_MAP_API}}&geocode=Асадулло Гулом&format=json
+  body: none
+  auth: inherit
+}
+
+params:query {
+  apikey: {{YA_MAP_API}}
+  geocode: Асадулло Гулом
+  format: json
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

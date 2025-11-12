@@ -1,11 +1,8 @@
+"use client";
 import HourlyWeatherChart from "./weatherChart";
 
 const HourlyWeather = () => {
-  return (
-    <div>
-      <HourlyWeatherChart />
-    </div>
-  );
+  return <HourlyWeatherChart />;
 };
 
 export default HourlyWeather;

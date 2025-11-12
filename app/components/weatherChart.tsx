@@ -11,7 +11,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import Image from "next/image";
-import weatherData from "@/lib/openMeteo";
 import { useWeatherType } from "@/hooks/useWeatherType";
 import {
   Card,
@@ -26,11 +25,14 @@ import {
   ChartTooltipContent,
   ChartConfig,
 } from "@/components/ui/chart";
+import { useWeatherData } from "@/hooks/useWeatherData";
 
 export default function WeatherAreaChart() {
-  const sunrise = weatherData.daily.sunrise;
-  const sunset = weatherData.daily.sunset;
-  const hourly = weatherData.hourly;
+  const { weatherData } = useWeatherData();
+
+  const sunrise = weatherData?.daily?.sunrise ?? 0;
+  const sunset = weatherData?.daily?.sunset ?? 0;
+  const hourly = weatherData?.hourly;
 
   const sunriseDate = new Date(sunrise[sunrise.length - 1]);
   const sunsetDate = new Date(sunset[0]);
@@ -39,7 +41,7 @@ export default function WeatherAreaChart() {
   const { label, icon } = useWeatherType(0, 12, 12);
 
   // формируем данные для графика
-  const chartData = hourly.time.map((t, i) => ({
+  const chartData = hourly?.time.map((t, i) => ({
     time: new Date(t).toLocaleTimeString("ru-RU", { hour: "2-digit" }),
     temperature: hourly.temperature_2m[i],
     weather: Array.isArray(label) ? label[i] : label,
@@ -54,24 +56,21 @@ export default function WeatherAreaChart() {
   } satisfies ChartConfig;
 
   return (
-    <Card className="bg-neutral-900 text-white">
+    <Card>
       <CardHeader>
         <CardTitle>Почасовая температура 🌡️</CardTitle>
         <CardDescription>Визуализация данных Open Meteo</CardDescription>
       </CardHeader>
 
-      <CardContent className="p-4">
+      <CardContent>
         <ChartContainer config={chartConfig}>
-          <ResponsiveContainer width="100%" height={360}>
+          <ResponsiveContainer width="100%" height={"100%"}>
             <AreaChart
               data={chartData}
               margin={{ top: 16, right: 24, left: 12, bottom: 16 }}
             >
               {/* Сетка с градацией */}
-              <CartesianGrid
-                stroke="rgba(255,255,255,0.1)"
-                strokeDasharray="3 3"
-              />
+              <CartesianGrid stroke="#aaa" strokeDasharray="3 3" />
               <XAxis
                 dataKey="time"
                 stroke="#aaa"
@@ -106,8 +105,12 @@ export default function WeatherAreaChart() {
                 label={{
                   value: "Восход",
                   fill: "#fbbf24",
-                  position: "top",
-                  fontSize: 12,
+                  position: {
+                    x: 0,
+                    y: -3,
+                  },
+                  fontSize: 18,
+                  fontWeight: "900",
                 }}
               />
 
@@ -119,21 +122,25 @@ export default function WeatherAreaChart() {
                 label={{
                   value: "Закат",
                   fill: "#3b82f6",
-                  position: "top",
-                  fontSize: 12,
+                  position: {
+                    x: 0,
+                    y: -3,
+                  },
+                  fontSize: 18,
+                  fontWeight: "700",
                 }}
               />
 
               {/* Tooltip и кривая температуры */}
               <ChartTooltip
-                cursor={false}
+                cursor={true}
                 content={
                   <ChartTooltipContent
                     nameKey="temperature"
-                    formatter={(v, _, p) => [
-                      `${v}°C`,
-                      p.payload.weather || "Температура",
-                    ]}
+                    formatter={(v) => [`${Math.round(Number(v))}°C`]}
+                    labelFormatter={(label) =>
+                      `Время: ${label.padStart(2, "0")}:00`
+                    }
                   />
                 }
               />
