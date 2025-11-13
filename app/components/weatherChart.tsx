@@ -41,7 +41,7 @@ export default function WeatherAreaChart() {
   const { label, icon } = useWeatherType(0, 12, 12);
 
   // формируем данные для графика
-  const chartData = hourly?.time.map((t, i) => ({
+  const chartData = hourly?.time.map((t: string, i: number) => ({
     time: new Date(t).toLocaleTimeString("ru-RU", { hour: "2-digit" }),
     temperature: hourly.temperature_2m[i],
     weather: Array.isArray(label) ? label[i] : label,
