@@ -1,12 +1,12 @@
 import CurrentWeather from "../components/currentWeather";
-import SearchBar from "../components/searchbar";
+import Header from "../components/header";
 import WeatherAreaChart from "../components/weatherChart";
 import WeeklyWeather from "../components/weeklyWeather";
 
 const Page = () => {
   return (
     <div className="p-3 space-y-4">
-      <SearchBar />
+      <Header />
       <WeeklyWeather />
       <CurrentWeather />
       <WeatherAreaChart />

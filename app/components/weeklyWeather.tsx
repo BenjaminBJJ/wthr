@@ -10,7 +10,7 @@ const WeeklyWeather = () => {
   return (
     <section className="flex  gap-3 overflow-x-scroll scrollbar-hidden">
       {weeklyWeatherTemperature?.map((temp, i) => (
-        <Card className="min-w-fit max-w-fit items-center" key={i}>
+        <Card className="w-fit items-center" key={i}>
           <CardHeader className="w-full text-center">
             <CardTitle className="capitalize">
               {weeklyWeatherDate?.[i]?.toLocaleDateString("ru-RU", {

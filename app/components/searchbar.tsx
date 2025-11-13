@@ -87,7 +87,7 @@ const SearchBar: FC = () => {
     };
 
     fetchGeocoder();
-  }, [selectedAddress]);
+  }, [selectedAddress, setCoordinates]);
   return (
     <div className="relative w-full max-w-md">
       <Popover
